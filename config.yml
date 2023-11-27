@@ -1,0 +1,6 @@
+mode: CSV # Can be either "VGM","CSV"
+data_path: C:\Users\anama\OneDrive\Desktop\Anamay_Thesis\data\OVA_mouse\VDJ\S1  #Location of data for vgm or csv with sequences
+model: Ablang
+method: average #Depending on the PLM can be the embedding extraction method or `prob` for probabilities
+chain: heavy
+folder_name: TRUE

@@ -1,0 +1,72 @@
+import pandas as pd
+import numpy as np
+import os
+import sys
+import argparse
+
+sys.path.append("../src")
+
+parser = argparse.ArgumentParser(
+                    prog='ProgramName',
+                    description='calculates PLL per PLM per sample'
+                    )
+
+parser.add_argument('-d','--dataset')           # positional argument
+parser.add_argument('--cdr3_only',action='store_true')
+parser.add_argument('--mode') 
+
+
+args = parser.parse_args()
+
+dataset = args.dataset
+cdr3_only = args.cdr3_only
+mode = args.mode
+
+suffixes = ["ablang","protbert","sapiens","ESM"]
+
+data_folder_path = os.path.join("..","..","..","data",dataset,"VDJ")
+dataset_path = os.path.join("..","..","..","data",dataset)
+save_path = (os.path.join(dataset_path,"all_samples_evo_likelihoods"))
+
+
+if not (os.path.isdir(save_path)):
+    os.mkdir(save_path)
+    
+
+if cdr3_only == True:
+    seq = "cdr3_only"
+else:
+    seq = "full_VDJ"
+
+if mode == "cdr3_from_VDJ":
+    seq = "cdr3_from_VDJ"
+
+merge_over = ["barcode","contig_id","chain","v_gene","d_gene","j_gene","c_gene","raw_clonotype_id","raw_consensus_id"]
+
+full_evo_likelihoods = []
+
+for sample in os.listdir(data_folder_path):
+        
+    for i,suffix in enumerate(suffixes):
+
+        cellranger_path = os.path.join(data_folder_path, sample)
+        # cellranger_path = os.path.join(cellranger_path, os.listdir(cellranger_path)[0])
+
+        evo_folder = os.path.join(cellranger_path,"evo_likelihoods")
+        per_plm_sample_evo_likelihoods = pd.read_csv(os.path.join(evo_folder,seq, f"evo_likelihood_{suffix}.csv"))
+        if (i == 0):
+            sample_evo_likelihoods = per_plm_sample_evo_likelihoods.copy()
+        else:
+            sample_evo_likelihoods = pd.merge(sample_evo_likelihoods, per_plm_sample_evo_likelihoods, on=merge_over)
+   
+        sample_evo_likelihoods = sample_evo_likelihoods.rename(columns={"evo_likelihood":f"evo_likelihood_{suffix}"})
+
+    sample_evo_likelihoods["original_sample_id"] = sample
+    sample_evo_likelihoods = sample_evo_likelihoods.to_dict(orient="records")
+    full_evo_likelihoods += sample_evo_likelihoods
+   
+full_evo_likelihoods = pd.DataFrame(full_evo_likelihoods)
+full_evo_likelihoods.to_csv(os.path.join(save_path,f"{dataset}_all_samples_all_plms_{seq}_evo_likelihoods.csv"), index=False)
+
+    
+
