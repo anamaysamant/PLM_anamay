@@ -6,20 +6,15 @@ import argparse
 
 sys.path.append("../src")
 
-parser = argparse.ArgumentParser(
-                    prog='ProgramName',
-                    description='calculates PLL per PLM per sample'
-                    )
+parser = argparse.ArgumentParser()
 
 parser.add_argument('-d','--dataset')           # positional argument
-parser.add_argument('--cdr3_only',action='store_true')
 parser.add_argument('--mode') 
 
 
 args = parser.parse_args()
 
 dataset = args.dataset
-cdr3_only = args.cdr3_only
 mode = args.mode
 
 suffixes = ["ablang","protbert","sapiens","ESM"]
@@ -33,13 +28,13 @@ if not (os.path.isdir(save_path)):
     os.mkdir(save_path)
     
 
-if cdr3_only == True:
-    seq = "cdr3_only"
-else:
-    seq = "full_VDJ"
+# if cdr3_only == True:
+#     seq = "cdr3_only"
+# else:
+#     seq = "full_VDJ"
 
-if mode == "cdr3_from_VDJ":
-    seq = "cdr3_from_VDJ"
+# if mode == "cdr3_from_VDJ":
+#     seq = "cdr3_from_VDJ"
 
 merge_over = ["barcode","contig_id","chain","v_gene","d_gene","j_gene","c_gene","raw_clonotype_id","raw_consensus_id"]
 
@@ -53,7 +48,7 @@ for sample in os.listdir(data_folder_path):
         # cellranger_path = os.path.join(cellranger_path, os.listdir(cellranger_path)[0])
 
         evo_folder = os.path.join(cellranger_path,"evo_likelihoods")
-        per_plm_sample_evo_likelihoods = pd.read_csv(os.path.join(evo_folder,seq, f"evo_likelihood_{suffix}.csv"))
+        per_plm_sample_evo_likelihoods = pd.read_csv(os.path.join(evo_folder,mode, f"evo_likelihood_{suffix}.csv"))
         if (i == 0):
             sample_evo_likelihoods = per_plm_sample_evo_likelihoods.copy()
         else:
@@ -66,7 +61,7 @@ for sample in os.listdir(data_folder_path):
     full_evo_likelihoods += sample_evo_likelihoods
    
 full_evo_likelihoods = pd.DataFrame(full_evo_likelihoods)
-full_evo_likelihoods.to_csv(os.path.join(save_path,f"{dataset}_all_samples_all_plms_{seq}_evo_likelihoods.csv"), index=False)
+full_evo_likelihoods.to_csv(os.path.join(save_path,f"{dataset}_all_samples_all_plms_{mode}_evo_likelihoods.csv"), index=False)
 
     
 

@@ -26,9 +26,8 @@ dataset = args.dataset
 mode = args.mode
 
 
-init_list = [Ablang,ProtBert,Sapiens]
-suffixes = ["ablang","protbert","sapiens"]
-cellranger_paths = []
+init_list = [Ablang,ProtBert,Sapiens,ESM]
+suffixes = ["ablang","protbert","sapiens","ESM"]
 
 data_folder_path = os.path.join("..","..","..","data",dataset,"VDJ")
 
@@ -49,6 +48,8 @@ for sample in os.listdir(data_folder_path):
     if (mode == "cdr3_only"):
         repertoire_file["full_sequence"] = repertoire_file["cdr3"]
 
+        repertoire_file = repertoire_file.dropna(subset=["full_sequence"])
+
         if not (os.path.isdir(os.path.join(evo_folder,"cdr3_only"))):
             os.mkdir(os.path.join(evo_folder,"cdr3_only"))
 
@@ -56,6 +57,8 @@ for sample in os.listdir(data_folder_path):
     elif (mode == "full_VDJ" or mode == "cdr3_from_VDJ"):
         repertoire_file["full_sequence"] = repertoire_file["fwr1"] + repertoire_file["cdr1"] + repertoire_file["fwr2"] + \
                                         repertoire_file["cdr2"] + repertoire_file["fwr3"] + repertoire_file["cdr3"] + repertoire_file["fwr4"]
+        
+        repertoire_file = repertoire_file.dropna(subset=["full_sequence"])
         
         if not (os.path.isdir(os.path.join(evo_folder,"full_VDJ"))):
             os.mkdir(os.path.join(evo_folder,"full_VDJ"))
@@ -80,7 +83,7 @@ for sample in os.listdir(data_folder_path):
 
     else:
         starts = pd.Series([0]*repertoire_file.shape[0])
-        ends = repertoire_file["full_sequence"].apply(len)
+        ends = repertoire_file["full_sequence"](lambda x: len(x) if not pd.isna(x) else None)
     
     for i,model in enumerate(init_list):
         if os.path.exists(os.path.join(save_path,f"evo_likelihood_{suffixes[i]}.csv")):
