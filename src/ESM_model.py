@@ -32,18 +32,17 @@ class ESM():
         file_name: `str`
         The name of the folder to store the embeddings
         """
-        CACHE_DIR = "/cluster/scratch/asamant/models--facebook--esm1b_t33_650M_UR50S/snapshots/7b37824baec4d3658e1df7479222a7c79b465b76"
+        # CACHE_DIR = "/cluster/scratch/asamant/models--facebook--esm1b_t33_650M_UR50S/snapshots/7b37824baec4d3658e1df7479222a7c79b465b76"
         torch.cuda.empty_cache()
 
-
-        self.tokenizer = AutoTokenizer.from_pretrained(CACHE_DIR)
         self.name_ = "esm1b_t33_650M_UR50S"
+        self.tokenizer = AutoTokenizer.from_pretrained("facebook/esm1b_t33_650M_UR50S")
 
         self.method = method
         self.file = file_name
         self.repr_layer_ = -1
 
-        self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        self.device = "cuda:0" if torch.cuda.is_available("facebook/esm1b_t33_650M_UR50S") else "cpu"
 
         # model, alphabet = pretrained.load_model_and_alphabet(self.name_)
         # model.eval()
@@ -53,7 +52,7 @@ class ESM():
         # #model and alphabet
         # self.model_ = model
 
-        self.mask_model = EsmForMaskedLM.from_pretrained(CACHE_DIR)
+        self.mask_model = EsmForMaskedLM.from_pretrained("facebook/esm1b_t33_650M_UR50S")
         
 
     def fit_transform(self, sequences:list, starts, ends, path, batches = 10):
