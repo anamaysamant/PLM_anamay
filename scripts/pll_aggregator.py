@@ -44,7 +44,7 @@ for sample in os.listdir(data_folder_path):
         else:
             sample_evo_likelihoods = pd.merge(sample_evo_likelihoods, per_plm_sample_evo_likelihoods, on=merge_over)
    
-        sample_evo_likelihoods = sample_evo_likelihoods.rename(columns={"evo_likelihood":f"evo_likelihood_{suffix}"})
+        sample_evo_likelihoods = sample_evo_likelihoods.rename(columns={"evo_likelihood":f"evo_likelihood_{suffix}_{mode}"})
 
     sample_evo_likelihoods["original_sample_id"] = sample
     sample_evo_likelihoods = sample_evo_likelihoods.to_dict(orient="records")
@@ -53,5 +53,5 @@ for sample in os.listdir(data_folder_path):
 full_evo_likelihoods = pd.DataFrame(full_evo_likelihoods)
 full_evo_likelihoods.to_csv(os.path.join(save_path,f"{dataset}_all_samples_all_plms_{mode}_evo_likelihoods.csv"), index=False)
 
-    
+
 

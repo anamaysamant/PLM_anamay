@@ -10,7 +10,7 @@ args = parser.parse_args()
 dataset = args.dataset
 vdj = pd.read_csv(f"../../../data/{dataset}/all_samples_VDJ_germline_gaps.csv", sep=",")
   
-evo_likelihood = pd.read_csv(f"../../../data/{dataset}/all_samples_evo_likelihoods/{dataset}_all_samples_all_plms_full_VDJ_evo_likelihoods.csv")
+evo_likelihood = pd.read_csv(f"../../../data/{dataset}/all_samples_evo_likelihoods/{dataset}_all_samples_all_plms_all_sources_evo_likelihoods.csv")
 
 IgG_subtypes = ["IGHG1","IGHG2B","IGHG2C","IGHG3"]
 IgA_subtypes = ["IGHA1","IGHA2"]
@@ -20,7 +20,7 @@ evo_likelihood = evo_likelihood.loc[evo_likelihood["chain"] == "IGH",:]
   
 evo_likelihood["barcode"] = evo_likelihood["barcode"].apply(lambda x: x.split("-")[0])
   
-join = pd.merge(vdj, evo_likelihood, on="barcode")
+join = pd.merge(vdj, evo_likelihood)
 join = join.sort_values("sample_id")
 
 join["VDJ_cgene"] = join["VDJ_cgene"].replace(IgG_subtypes,"IGHG").replace(IgA_subtypes,"IGHA")
