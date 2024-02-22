@@ -37,7 +37,7 @@ class Ablang():
     
 
 
-    def fit_transform(self, sequences, starts, ends, path):
+    def fit_transform(self, sequences, starts, ends):
         """
         Fits the model and outputs the embeddings.
         

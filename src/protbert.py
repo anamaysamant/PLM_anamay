@@ -41,7 +41,7 @@ class ProtBert():
         self.file = file_name
 
 
-    def fit_transform(self, sequences:list, starts, ends, path, batches = 10):
+    def fit_transform(self, sequences:list, starts, ends, batches = 10):
         """
         Fits the model and outputs the embeddings.
         

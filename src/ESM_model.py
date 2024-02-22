@@ -42,7 +42,7 @@ class ESM():
         self.file = file_name
         self.repr_layer_ = -1
 
-        self.device = "cuda:0" if torch.cuda.is_available("facebook/esm1b_t33_650M_UR50S") else "cpu"
+        self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
 
         # model, alphabet = pretrained.load_model_and_alphabet(self.name_)
         # model.eval()
@@ -50,9 +50,9 @@ class ESM():
         # if torch.cuda.is_available():
         #     model = model.cuda()
         # #model and alphabet
-        # self.model_ = model
+        self.model = EsmModel.from_pretrained("facebook/esm1b_t33_650M_UR50S").to(self.device)
 
-        self.mask_model = EsmForMaskedLM.from_pretrained("facebook/esm1b_t33_650M_UR50S")
+        self.mask_model = EsmForMaskedLM.from_pretrained("facebook/esm1b_t33_650M_UR50S").to(self.device)
         
 
     def fit_transform(self, sequences:list, starts, ends, path, batches = 10):

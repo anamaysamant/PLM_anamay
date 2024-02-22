@@ -41,7 +41,7 @@ class Sapiens():
             self.layer = "prob"
         self.file = file_name
 
-    def fit_transform(self, sequences, starts, ends, path):
+    def fit_transform(self, sequences, starts, ends):
         """
         Fits the model and outputs the embeddings.
         
