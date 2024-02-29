@@ -55,7 +55,7 @@ class ESM():
         self.mask_model = EsmForMaskedLM.from_pretrained("facebook/esm1b_t33_650M_UR50S").to(self.device)
         
 
-    def fit_transform(self, sequences:list, starts, ends, path, batches = 10):
+    def fit_transform(self, sequences:list, starts, ends, batches = 10):
         """
         Fits the model and outputs the embeddings.
         
@@ -74,11 +74,13 @@ class ESM():
         batch_size = round(len(sequences)/batches)
         print("\nUsing the {} method".format(self.method))
         
-        pooler_zero = np.zeros((1280, len(sequences)))
+        pooler_zero = np.zeros((len(sequences),1280))
         for sequence,_ in zip(enumerate(sequences), tqdm(range(len(sequences)))):
             if not isinstance(sequence[1], float):
                 j = sequence[0]
-                tokenized_sequences = self.tokenizer(sequence[1], return_tensors= 'pt') #return tensors using pytorch
+                amino_acids = list(sequence[1])
+                seq_tokens = ' '.join(amino_acids)
+                tokenized_sequences = self.tokenizer(seq_tokens, return_tensors= 'pt') #return tensors using pytorch
                 tokenized_sequences = tokenized_sequences.to(self.device)
                 output = self.model(**tokenized_sequences)
 
@@ -94,7 +96,7 @@ class ESM():
                 elif self.method == "first":
                     output = output.last_hidden_state[0,starts[j],:]
                     
-                pooler_zero[:,sequence[0]] = output.tolist()
+                pooler_zero[sequence[0],:] = output.tolist()
                 # if sequence[0] % (batch_size+1) == 0:   #Checkpoint save
                 #     pd.DataFrame(pooler_zero).to_csv("outfiles/"+self.file+"/embeddings.csv")
 

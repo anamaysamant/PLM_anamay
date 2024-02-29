@@ -12,7 +12,7 @@ vdj = pd.read_csv(f"../../../data/{dataset}/all_samples_VDJ_germline_gaps.csv", 
   
 evo_likelihood = pd.read_csv(f"../../../data/{dataset}/all_samples_evo_likelihoods/{dataset}_all_samples_all_plms_all_sources_evo_likelihoods.csv")
 
-IgG_subtypes = ["IGHG1","IGHG2B","IGHG2C","IGHG3"]
+IgG_subtypes = ["IGHG1","IGHG2","IGHG2B","IGHG2C","IGHG3","IGHG4"]
 IgA_subtypes = ["IGHA1","IGHA2"]
 
 vdj = vdj.loc[vdj["Nr_of_VDJ_chains"] == 1, :]

@@ -73,8 +73,8 @@ if __name__ == "__main__":
             for key in list(obj.keys()):
                 try:
                     save_path = os.path.join(color_folder,f"evo_velo_embedding_{model}_{key}.png")
-                    sc.tl.umap(obj[key])
-                    evo.tl.velocity_embedding(obj[key])
+                    # sc.tl.umap(obj[key])
+                    # evo.tl.velocity_embedding(obj[key])
                 
                     if samplewise:
                         for sample in obj[key].obs["sample_id"].unique():

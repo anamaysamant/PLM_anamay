@@ -24,8 +24,8 @@ dataset = args.dataset
 mode = args.mode
 
 
-init_list = [Ablang,ProtBert,Sapiens]
-suffixes = ["ablang","protbert","sapiens"]
+init_list = [Ablang,ProtBert,Sapiens, ESM]
+suffixes = ["ablang","protbert","sapiens", "ESM"]
 
 if mode == "general":
  
@@ -53,6 +53,7 @@ if mode == "general":
             model = model()
 
         embeds = model.fit_transform(sequences=list(repertoire_file["full_sequence"]),starts=list(starts),ends=list(ends))
+        print(embeds.shape)
         embeds = pd.concat([repertoire_file,embeds],axis=1)  
 
         embeds.to_csv(os.path.join(save_path,f"embeddings_{suffixes[i]}.csv"), index=False)   
@@ -130,13 +131,13 @@ else:
                 if suffixes[i] == "ablang":
                     embeds_1 = Ablang(chain="heavy").fit_transform(sequences=list(repertoire_file[is_heavy_chain]["full_sequence"]),
                                                         starts=list(starts[is_heavy_chain]),ends=list(ends[is_heavy_chain]),
-                                                        path = save_filepath)
+                                                    )
                     
                     embeds_1 = pd.concat([repertoire_file.loc[is_heavy_chain,columns_to_save].reset_index(drop=True),embeds_1],axis=1)
                     
                     embeds_2 = Ablang(chain="light").fit_transform(sequences=list(repertoire_file[is_light_chain]["full_sequence"]),
                                                         starts=list(starts[is_light_chain]),ends=list(ends[is_light_chain]),
-                                                        path = save_filepath)
+                                                    )
                     
                     embeds_2 = pd.concat([repertoire_file.loc[is_light_chain,columns_to_save].reset_index(drop=True),embeds_2],axis=1)
 
@@ -145,13 +146,13 @@ else:
                 if suffixes[i] == "sapiens":
                     embeds_1 = Sapiens(chain_type="H").fit_transform(sequences=(repertoire_file[is_heavy_chain]["full_sequence"]),
                                                         starts=list(starts[is_heavy_chain]),ends=list(ends[is_heavy_chain]),
-                                                        path = save_filepath)
+                                                    )
 
                     embeds_1 = pd.concat([repertoire_file.loc[is_heavy_chain,columns_to_save].reset_index(drop=True),embeds_1],axis=1)
 
                     embeds_2 = Sapiens(chain_type="L").fit_transform(sequences=(repertoire_file[is_light_chain]["full_sequence"]),
                                                         starts=list(starts[is_light_chain]),ends=list(ends[is_light_chain]),
-                                                        path = save_filepath)
+                                                    )
                     
                     embeds_2 = pd.concat([repertoire_file.loc[is_light_chain,columns_to_save].reset_index(drop=True),embeds_2],axis=1)
 
@@ -159,7 +160,7 @@ else:
 
             else:
                 model = model()
-                embeds = model.fit_transform(sequences=list(repertoire_file["full_sequence"]),starts=list(starts),ends=list(ends),path = save_filepath)
+                embeds = model.fit_transform(sequences=list(repertoire_file["full_sequence"]),starts=list(starts),ends=list(ends))
                 embeds = pd.concat([repertoire_file[columns_to_save],embeds],axis=1)
 
             embeds.to_csv(save_filepath, index=False, compression="gzip")

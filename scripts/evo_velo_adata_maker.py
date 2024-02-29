@@ -14,6 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-d','--dataset')
 parser.add_argument('--group', default="v_gene_family")
 parser.add_argument('--include_germline', action='store_true') 
+parser.add_argument('--no_IGD', action='store_true') 
 parser.add_argument('--no_IGM', action='store_true') 
 parser.add_argument('--only_IGM', action='store_true')           
 # parser.add_argument('--mode') 
@@ -25,6 +26,7 @@ group = args.group
 include_germline = args.include_germline
 no_IGM = args.no_IGM
 only_IGM = args.only_IGM
+no_IGD = args.no_IGD
 
 mode = "full_VDJ"
 
@@ -47,6 +49,8 @@ if no_IGM:
     save_file_name += "no_IGM_"
 elif only_IGM:
     save_file_name += "only_IGM_"
+if no_IGD:
+    save_file_name += "no_IGD_"
 
 save_file_name += group
 
@@ -73,8 +77,12 @@ for i, model in enumerate(model_names):
         embeddings_file["v_gene_family"] = embeddings_file["v_gene"].apply(lambda x: x.split('-')[0])
         embeddings_file["sample_id"] = sample["sample_id"]
 
+        if no_IGD:
+            embeddings_file = embeddings_file.loc[embeddings_file["c_gene"] != "IGHD",:]
+            embeddings_file = embeddings_file.dropna(subset=["c_gene"]).reset_index(drop=True)
         if no_IGM:
             embeddings_file = embeddings_file.loc[embeddings_file["c_gene"] != "IGHM",:]
+            embeddings_file = embeddings_file.dropna(subset=["c_gene"]).reset_index(drop=True)
         elif only_IGM:
             embeddings_file = embeddings_file.loc[embeddings_file["c_gene"] == "IGHM",:]
             embeddings_file = embeddings_file.dropna(subset=["c_gene"]).reset_index(drop=True)
@@ -92,6 +100,7 @@ for i, model in enumerate(model_names):
     pooled_embeds["barcode"] = pooled_embeds["barcode"].apply(lambda x: x.split("-")[0])
     pooled_embeds = pooled_embeds.merge(data, on="barcode",suffixes=('', '_y'))
     pooled_embeds = pooled_embeds.drop_duplicates("full_VDJ_aa").reset_index(drop=True)
+    pooled_embeds = pooled_embeds.dropna(subset=embedding_cols + [f"evo_likelihood_{model}"]).reset_index(drop=True) 
     
     if include_germline:
         germline_embeddings = pd.read_csv(os.path.join(germlines_path,f"all_germline_embeddings_{model}.csv.gzip"), compression="gzip")
@@ -113,10 +122,7 @@ for i, model in enumerate(model_names):
 
     embedding_cols = [col for col in list(pooled_embeds.columns) if col.startswith("dim")]
     metadata_cols = list(set(pooled_embeds.columns) - set(embedding_cols))
-
-    pooled_embeds = pooled_embeds.drop_duplicates(embedding_cols).reset_index(drop=True)
-    pooled_embeds = pooled_embeds.dropna(subset=embedding_cols + [f"evo_likelihood_{model}"]).reset_index(drop=True) 
-    
+        
     only_embeddings = pooled_embeds[embedding_cols].copy()
     metadata = pooled_embeds[metadata_cols].copy()
     
