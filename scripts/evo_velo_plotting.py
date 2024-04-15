@@ -64,6 +64,15 @@ if __name__ == "__main__":
     elif include_germline:
         data_path = os.path.join("..","..","..","data",dataset,f"evo_velo_{group}_germline.pkl")
 
+
+    ### only for group v_gene
+        
+    data = pd.read_csv(os.path.join("..","..","..","data",dataset,"vdj_evolike_combine.csv"))
+    data = data.drop_duplicates("full_VDJ_aa").reset_index(drop=True)
+    specific_v_gene = list(data["v_gene"].value_counts().index)[:10]
+
+    ###
+
     with open(data_path ,"rb") as file:
         model_dict = pkl.load(file)
 
@@ -85,6 +94,8 @@ if __name__ == "__main__":
                             plt.savefig(save_path, bbox_inches="tight")
                             plt.close()
                     else:
+                        if group == "v_gene" and key not in specific_v_gene:
+                            continue
                         ax = evo.pl.velocity_embedding_stream(obj[key],color = color, legend_loc="right margin", show=False)
                         ax.set_title(f"{model}_{key} colored by {color}")
                         plt.savefig(save_path, bbox_inches="tight")

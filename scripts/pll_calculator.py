@@ -126,7 +126,7 @@ else:
         else: ### use all positions 
 
             starts = pd.Series([0]*repertoire_file.shape[0])
-            ends = repertoire_file["full_sequence"](lambda x: len(x) if not pd.isna(x) else None)
+            ends = repertoire_file["full_sequence"].apply(lambda x: len(x) if not pd.isna(x) else None)
         
         for i,model in enumerate(init_list): ### the class method "calc_pseudo_likelihood_sequence" calculates the evolike of each sequence
 
