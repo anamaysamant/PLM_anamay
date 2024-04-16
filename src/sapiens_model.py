@@ -62,7 +62,7 @@ class Sapiens():
                 try:
                     output.append(list(np.mean(np.mean(sapiens.predict_residue_embedding(sequence, chain_type=self.chain)[:,starts[j]:ends[j],:], axis = 1),axis = 0)))
                 except:
-                    output.append(None)
+                    continue
             # output = sequences.apply(lambda seq: pd.Series(np.mean(np.mean(sapiens.predict_residue_embedding(seq, chain_type=self.chain)[:,starts[seq.name]:ends[seq.name],:], axis = 1),axis = 0)))
             # output.to_csv("outfiles/"+self.file+"/embeddings.csv") #We have one embeded sequence per row
             output = pd.DataFrame(output, columns=[f"dim_{i}" for i in range(len(output[0]))])
@@ -78,7 +78,7 @@ class Sapiens():
                 try:
                     output.append(list(np.mean(sapiens.predict_residue_embedding(sequence, chain_type=self.chain)[:,starts[j]:ends[j],:], axis = 1)[self.layer-1,:]))
                 except:
-                    output.append(None)
+                    continue
             # output.to_csv("outfiles/"+self.file+"/embeddings.csv") #We have one embeded sequence per row
             output.columns = [f"dim_{i}" for i in range(output.shape[1])]
             return output.reset_index(drop=True)
