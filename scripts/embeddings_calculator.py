@@ -86,6 +86,18 @@ else:
                 os.mkdir(os.path.join(embeddings_folder,"cdr3_only"))
 
             save_path = os.path.join(embeddings_folder,"cdr3_only")
+
+        elif (mode == "v_gene_only"):
+            repertoire_file["full_sequence"] = repertoire_file["fwr1"] + repertoire_file["cdr1"] + repertoire_file["fwr2"] + \
+                                            repertoire_file["cdr2"] + repertoire_file["fwr3"]
+
+            repertoire_file = repertoire_file.dropna(subset=["full_sequence"])
+
+            if not (os.path.isdir(os.path.join(embeddings_folder,"v_gene_only"))):
+                os.mkdir(os.path.join(embeddings_folder,"v_gene_only"))
+
+            save_path = os.path.join(embeddings_folder,"v_gene_only")
+
         elif (mode == "full_VDJ" or mode == "cdr3_from_VDJ"):
             repertoire_file["full_sequence"] = repertoire_file["fwr1"] + repertoire_file["cdr1"] + repertoire_file["fwr2"] + \
                                             repertoire_file["cdr2"] + repertoire_file["fwr3"] + repertoire_file["cdr3"] + repertoire_file["fwr4"]
