@@ -61,16 +61,14 @@ for i,model in enumerate(init_list):
     if suffixes[i] in ["ablang","sapiens"]:
         if suffixes[i] == "ablang":
             embeds = Ablang(chain="heavy").fit_transform(sequences=list(data["VDJ_ref.aa"]),
-                                                starts=list(starts),ends=list(ends),
-                                                path = save_filepath)
+                                                starts=list(starts),ends=list(ends))
             
             embeds = pd.concat([data.loc[:,columns_to_save].reset_index(drop=True),embeds],axis=1)
             
             
         if suffixes[i] == "sapiens":
             embeds = Sapiens(chain_type="H").fit_transform(sequences=(data["VDJ_ref.aa"]),
-                                                starts=list(starts),ends=list(ends),
-                                                path = save_filepath)
+                                                starts=list(starts),ends=list(ends))
 
             embeds = pd.concat([data.loc[:,columns_to_save].reset_index(drop=True),embeds],axis=1)
 
