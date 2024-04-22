@@ -76,7 +76,7 @@ for i,model in enumerate(init_list):
 
     else:
         model = model()
-        embeds = model.fit_transform(sequences=list(data["VDJ_ref.aa"]),starts=list(starts),ends=list(ends),path = save_filepath)
+        embeds = model.fit_transform(sequences=list(data["VDJ_ref.aa"]),starts=list(starts),ends=list(ends))
         embeds = pd.concat([data.loc[:,columns_to_save].reset_index(drop=True),embeds],axis=1)
 
     embeds.to_csv(save_filepath, index=False, compression="gzip")
